@@ -1,3 +1,4 @@
+require 'dotenv/load'
 require './app'
 require './middlewares/chat_backend'
 

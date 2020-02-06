@@ -1,10 +1,6 @@
-# Ruby WebSockets Chat Demo
+# FancyChat Demo
 
-[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
-
-This is a simple application that serves tasty WebSockets to your users with [faye-websocket](https://github.com/faye/faye-websocket-ruby), [Puma](https://github.com/puma/puma), and [Sinatra](https://github.com/sinatra/sinatra).
-
-Check out the [live demo](http://ruby-websockets-chat.herokuapp.com/) or [read the docs](https://devcenter.heroku.com/articles/ruby-websockets).
+A simple chat server based off of Heroku's [Ruby WebSockets Chat Demo](https://github.com/rmtsukuru/ruby-websockets-chat-demo).
 
 ## Setup
 To install all the dependencies, run:
@@ -13,12 +9,15 @@ To install all the dependencies, run:
 bundle install
 ```
 
-Next the app requires some env vars for configuration. A sample `.env.sample` is provided for running the app locally. You can copy `.env.sample` to `.env` which foreman will pick up.
+You may wish to delete the existing Gemfile.lock and start fresh unless you too are developing on MinGW/Windows 7.
 
-Using foreman we can boot the application.
+The application requires (Redis)[https://redis.io/topics/quickstart] to be installed and running locally on its usual port (6379). If you have it running elsewhere modify the REDISCLOUD_URL variable in `.env` accordingly.
+
+Once you have Redis running, start the server:
 
 ```
-$ foreman start
+$ bundle exec puma -p 5000
 ```
 
-You can now visit <http://localhost:5000> to see the application.
+You can now visit <http://localhost:5000> to see the application. If you connect to it from multiple browser tabs/windows, all of them will share the same chat.
+
