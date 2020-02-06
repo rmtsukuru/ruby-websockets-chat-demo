@@ -19,7 +19,9 @@ module ChatDemo
         redis_sub = Redis.new(host: uri.host, port: uri.port, password: uri.password)
         redis_sub.subscribe(CHANNEL) do |on|
           on.message do |channel, msg|
-            @clients.each {|ws| ws.send(msg) }
+            message = JSON.parse(msg)
+            message[:type] = :message
+            @clients.each {|ws| ws.send(message.to_json) }
           end
         end
       end

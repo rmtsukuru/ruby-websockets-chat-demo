@@ -2,17 +2,28 @@ var scheme   = "<%= @scheme %>";
 var uri      = scheme + window.document.location.host + "/";
 var ws       = new WebSocket(uri);
 ws.onmessage = function(message) {
-  var data = JSON.parse(message.data);
-  $("#chat-text").append("<div class='panel panel-default'><div class='panel-heading'>" + data.handle + "</div><div class='panel-body'>" + data.text + "</div></div>");
-  $("#chat-text").stop().animate({
-    scrollTop: $('#chat-text')[0].scrollHeight
-  }, 800);
+    var data = JSON.parse(message.data);
+    if (data.type == 'message') {
+        $("#chat-text #" + data.room).append("<div class='panel panel-default'><div class='panel-heading'>" + data.handle + "</div><div class='panel-body'>" + data.text + "</div></div>");
+        $("#chat-text").stop().animate({
+            scrollTop: $('#chat-text')[0].scrollHeight
+        }, 800);
+    }
 };
 
+$('#tabs > li > .nav-link').click(function(e) {
+    e.preventDefault();
+    $('#tabs > li > .nav-link').removeClass('active');
+    $(this).addClass('active');
+    $('#chat-text > .tab-pane').removeClass('show active');
+    $('#chat-text > ' + $(this).attr('href')).addClass('show active');
+});
+
 $("#input-form").on("submit", function(event) {
-  event.preventDefault();
-  var handle = $("#input-handle")[0].value;
-  var text   = $("#input-text")[0].value;
-  ws.send(JSON.stringify({ handle: handle, text: text }));
-  $("#input-text")[0].value = "";
+    event.preventDefault();
+    var handle = $("#input-handle")[0].value;
+    var text   = $("#input-text")[0].value;
+    var room = $(".tab-pane.active").attr('id');
+    ws.send(JSON.stringify({ handle: handle, text: text, room: room }));
+    $("#input-text")[0].value = "";
 });
