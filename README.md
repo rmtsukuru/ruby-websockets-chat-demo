@@ -1,6 +1,6 @@
-# FancyChat Demo
+# FancyChat ✨
 
-A simple chat server based off of Heroku's [Ruby WebSockets Chat Demo](https://github.com/rmtsukuru/ruby-websockets-chat-demo).
+A simple chat server derived from Heroku's [Ruby WebSockets Chat Demo](https://github.com/rmtsukuru/ruby-websockets-chat-demo). Supports multiple chat rooms that can be created by the users directly.
 
 ## Setup
 To install all the dependencies, run:
