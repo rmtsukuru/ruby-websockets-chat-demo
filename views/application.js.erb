@@ -37,6 +37,14 @@ $("#message-form").on("submit", function(event) {
     $("#input-text")[0].value = "";
 });
 
+$('#input-room').on('change keyup', function(e) {
+    if ($(this).val().match(/^[A-Za-z][A-Za-z0-9_\-]+$/)) {
+        $('#room-form button[type=submit]').removeClass('disabled');
+    } else {
+        $('#room-form button[type=submit]').addClass('disabled');
+    }
+});
+
 $("#room-form").on("submit", function(event) {
     event.preventDefault();
     var room = $("#input-room")[0].value;
