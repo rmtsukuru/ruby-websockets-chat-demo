@@ -1,29 +1,45 @@
 var scheme   = "<%= @scheme %>";
 var uri      = scheme + window.document.location.host + "/";
 var ws       = new WebSocket(uri);
-ws.onmessage = function(message) {
-    var data = JSON.parse(message.data);
-    if (data.type == 'message') {
-        $("#chat-text #" + data.room).append("<div class='panel panel-default'><div class='panel-heading'>" + data.handle + "</div><div class='panel-body'>" + data.text + "</div></div>");
-        $("#chat-text").stop().animate({
-            scrollTop: $('#chat-text')[0].scrollHeight
-        }, 800);
-    }
-};
 
-$('#tabs > li > .nav-link').click(function(e) {
+var handleTabClick = function(e) {
     e.preventDefault();
     $('#tabs > li > .nav-link').removeClass('active');
     $(this).addClass('active');
     $('#chat-text > .tab-pane').removeClass('show active');
     $('#chat-text > ' + $(this).attr('href')).addClass('show active');
-});
+};
 
-$("#input-form").on("submit", function(event) {
+ws.onmessage = function(message) {
+    var data = JSON.parse(message.data);
+    console.log(data);
+    if (data.type == 'message') {
+        $("#chat-text #" + data.room).append("<div class='panel panel-default'><div class='panel-heading'>" + data.handle + "</div><div class='panel-body'>" + data.text + "</div></div>");
+        $("#chat-text").stop().animate({
+            scrollTop: $('#chat-text')[0].scrollHeight
+        }, 800);
+    } else if (data.type == 'room' && data.action == 'create') {
+        var room = data.room;
+        $('#chat-text').append("<div class='tab-pane' id='" + room + "' role='tabpanel'></div>");
+        $('#tabs').append("<li class='nav-item'><a class='nav-link' data-toggle='tab' href='#" + room + "' role='tab'>" + room + "</a>");
+        $('#tabs > .nav-item:last-child > a').click(handleTabClick);
+    }
+};
+
+$('#tabs > li > .nav-link').click(handleTabClick);
+
+$("#message-form").on("submit", function(event) {
     event.preventDefault();
     var handle = $("#input-handle")[0].value;
     var text   = $("#input-text")[0].value;
     var room = $(".tab-pane.active").attr('id');
-    ws.send(JSON.stringify({ handle: handle, text: text, room: room }));
+    ws.send(JSON.stringify({ type: 'message', handle: handle, text: text, room: room }));
     $("#input-text")[0].value = "";
+});
+
+$("#room-form").on("submit", function(event) {
+    event.preventDefault();
+    var room = $("#input-room")[0].value;
+    ws.send(JSON.stringify({ type: 'room', action: 'create', room: room }));
+    $("#input-room")[0].value = "";
 });
